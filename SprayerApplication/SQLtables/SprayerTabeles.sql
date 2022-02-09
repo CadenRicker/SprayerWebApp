@@ -1,21 +1,27 @@
-USE sprayCatalog;
+USE SprayCatalog;
+drop table SpraySafe;
+drop table plant;
+drop table spray;
+
 CREATE TABLE plant (
-    id int,
+    id int(11) NOT NULL UNIQUE ,
     name varchar(20),
-    primary key (name)
+    primary key (id)
 );
 
 CREATE TABLE spray(
-    id int,
+    id int (11)NOT NULL UNIQUE ,
     name varchar(20),
-    Decimal(13,2) price,    
-    primary key (name)
+    price Decimal(13,2),
+    primary key (id)
 );
 CREATE TABLE SpraySafe(
-    int sprayId,
-    int plantId,
-    int rating,
-    Decimal(15,4) concentration,
-    foreign key sprayId references spray sprayId,
-    primary key (sprayId, cropId)
-)
+    sprayId int(11) NOT NULL ,
+    plantId int(11) NOT NULL ,
+    rating  int,
+    concentration Decimal(15,4),
+    primary key (sprayId, plantId),
+    foreign key (sprayId) references spray(Id),
+    foreign key (plantId) references  plant(Id)
+
+);
