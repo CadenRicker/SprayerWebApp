@@ -4,24 +4,22 @@ drop table plant;
 drop table spray;
 
 CREATE TABLE plant (
-    id int(11) NOT NULL UNIQUE ,
-    name varchar(20),
-    primary key (id)
+    name varchar(20) UNIQUE,
+    crop boolean,
+    primary key (name)
 );
 
 CREATE TABLE spray(
-    id int (11)NOT NULL UNIQUE ,
-    name varchar(20),
+    name varchar(20) UNIQUE ,
     price Decimal(13,2),
-    primary key (id)
+    primary key (name)
 );
 CREATE TABLE SpraySafe(
-    sprayId int(11) NOT NULL ,
-    plantId int(11) NOT NULL ,
+    sprayName varchar(20) ,
+    plantName varchar(20) ,
     rating  int,
     concentration Decimal(15,4),
-    primary key (sprayId, plantId),
-    foreign key (sprayId) references spray(Id),
-    foreign key (plantId) references  plant(Id)
-
+    primary key (sprayName, plantName),
+    foreign key (sprayName) references spray(name),
+    foreign key (plantName) references  plant(name)
 );
