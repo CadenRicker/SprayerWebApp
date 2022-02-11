@@ -1,0 +1,99 @@
+<!-- 
+This is the query form page 
+Created by Evan Humphry
+Modified on: 05/13/20
+5/13/20: Added date selection feature. Removed things that aren't being used.
+-->
+
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>Home</title>
+    <link href="../static/covidTracker.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+     integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+  </head>
+  <body class="background">
+       <!-- navbar -->
+     <div class="bs-example">
+            <nav class="navbar navbar-expand-md navbar-light bg-light">
+                <a href="#" class="navbar-brand">
+                   LG Covid-19 Tracker
+                </a>
+                <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+        
+                <div class="collapse navbar-collapse" id="navbarCollapse">
+                    <div class="navbar-nav">
+
+                    </div>
+                   
+                    <div class="navbar-nav ml-auto">                           
+                            <a href="/" class="nav-item nav-link">Sign Out</a>
+                    
+                    </div>
+
+                </div>
+            </nav>
+        </div>
+
+
+
+
+            <div class="login-form">
+            <form action= "http://localhost:5000/result" method = 'POST'> 
+              <h2 class="text">Crops</h2> 
+  
+                <div class="form-group" >
+                  <label >Crop: 1</label>
+                  <select class="form-control" name="crop0" >
+                    <option value = "none">none</option>
+                    {% if gotCrop %}
+                      {% for crop in crops %}
+                      <option>{{crop}}</option>
+                      {% endfor %}
+                    {% endif %}
+                  </select>
+               </div>
+               <div class="form-group" >
+                  <label >Crop: 2</label>
+                  <select class="form-control" name="crop1" >
+                    <option value = "none">none</option>
+                    {% if gotCrop %}
+                      {% for crop in crops %}
+                      <option>{{crop}}</option>
+                      {% endfor %}
+                    {% endif %}
+                  </select>               
+                </div>
+                <h2>Weeds</h2>
+                <div class="form-group" >
+                  <label >Weed: 1</label>
+                  <select class="form-control" name="crop1" >
+                    <option value = "none">none</option>
+                    {% if gotCrop %}
+                      {% for crop in crops %}
+                      <option>{{crop}}</option>
+                      {% endfor %}
+                    {% endif %}
+                  </select>               
+                </div>
+                <div class="form-group">
+                    <button type="submit" value ="Submit" class="btn btn-danger btn-block">Generate Report</button>
+                </div>                     
+            </form>  
+          </div> 
+
+
+<!-- Extra JavaScript/CSS added manually in "Settings" tab -->
+<!-- Include jQuery -->
+<script type="text/javascript" src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+
+
+  </body>
+</html>
