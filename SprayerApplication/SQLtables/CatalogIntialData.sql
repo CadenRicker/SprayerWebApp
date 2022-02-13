@@ -26,5 +26,14 @@ INSERT INTO plant (name, crop) values
 ('English Ivy', FALSE);
 INSERT INTO spray (name, price) VALUES
 ('Round Up',10)
-();
+('Alachlor',3)
+('Bensulide',3)
+Bentazon
+Benefiin
+Bicyclopyrone
+Suppress EC
+Suppress EC
+
+
+('2 4-D Amine 4',5);
 
