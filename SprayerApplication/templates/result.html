@@ -1,0 +1,139 @@
+<!-- 
+This is the query form page 
+Created by Evan Humphry
+Modified on: 05/13/20
+5/13/20: Added date selection feature. Removed things that aren't being used.
+-->
+
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>Home</title>
+    <link href="../static/covidTracker.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootswatch@4.5.2/dist/litera/bootstrap.min.css" integrity="sha384-enpDwFISL6M3ZGZ50Tjo8m65q06uLVnyvkFO3rsoW0UC15ATBFz3QEhr3hmxpYsn" crossorigin="anonymous">
+  </head>
+  <body class="background">
+       <!-- navbar -->
+     <div class="bs-example">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+            <a href="#" class="navbar-brand">
+                Sprayer Application
+            </a>
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+    
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+                <div class="navbar-nav">
+
+                </div>
+                
+                <div class="navbar-nav ml-auto">                           
+                        <a href="/Login" class="nav-item nav-link">Login</a>
+                
+                </div>
+
+            </div>
+        </nav>
+      </div>
+      <style>
+        tr[data-href]{
+          cursor: pointer;
+        }
+      </style>
+      <div class="login-form">
+        <table class="table table-hover">
+            <thead>
+              <tr>
+                <th scope="col">Type</th>
+                <th scope="col">Column heading</th>
+                <th scope="col">Column heading</th>
+                <th scope="col">Column heading</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="table-active" data-href="spray/roundup">
+                <th scope="row">Active</th>
+                <td>Column content</td>
+                <td>Column content</td>
+                <td>Column content</td>
+              </tr>
+              <tr data-href="spray/round">
+                <th scope="row">Default</th>
+                <td>Column content</td>
+                <td>Column content</td>
+                <td>Column content</td>
+              </tr>
+              <tr class="table-primary">
+                <th scope="row">Primary</th>
+                <td>Column content</td>
+                <td>Column content</td>
+                <td>Column content</td>
+              </tr>
+              <tr class="table-secondary">
+                <th scope="row">Secondary</th>
+                <td>Column content</td>
+                <td>Column content</td>
+                <td>Column content</td>
+              </tr>
+              <tr class="table-success">
+                <th scope="row">Success</th>
+                <td>Column content</td>
+                <td>Column content</td>
+                <td>Column content</td>
+              </tr>
+              <tr class="table-danger">
+                <th scope="row">Danger</th>
+                <td>Column content</td>
+                <td>Column content</td>
+                <td>Column content</td>
+              </tr>
+              <tr class="table-warning">
+                <th scope="row">Warning</th>
+                <td>Column content</td>
+                <td>Column content</td>
+                <td>Column content</td>
+              </tr>
+              <tr class="table-info">
+                <th scope="row">Info</th>
+                <td>Column content</td>
+                <td>Column content</td>
+                <td>Column content</td>
+              </tr>
+              <tr class="table-light">
+                <th scope="row">Light</th>
+                <td>Column content</td>
+                <td>Column content</td>
+                <td>Column content</td>
+              </tr>
+              <tr class="table-dark">
+                <th scope="row">Dark</th>
+                <td>Column content</td>
+                <td>Column content</td>
+                <td>Column content</td>
+              </tr>
+            </tbody>
+          </table>
+        </div> 
+       
+      <script>
+        document.addEventListener("DOMContentLoaded",()=>{
+          const rows =document.querySelectorAll("tr[data-href]");
+          rows.forEach(row =>{
+            row.addEventListener('click',()=>{
+              window.location.href = row.dataset.href;
+            });
+          });
+        });
+      </script>
+
+<!-- Extra JavaScript/CSS added manually in "Settings" tab -->
+<!-- Include jQuery -->
+<script type="text/javascript" src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+
+
+  </body>
+</html>

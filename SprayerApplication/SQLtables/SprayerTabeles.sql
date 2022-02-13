@@ -19,6 +19,7 @@ CREATE TABLE SpraySafe(
     plantName varchar(20) ,
     rating  int,
     concentration Decimal(15,4),
+    gallonsPerAcr DECIMAL(15,4),
     primary key (sprayName, plantName),
     foreign key (sprayName) references spray(name),
     foreign key (plantName) references  plant(name)

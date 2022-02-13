@@ -25,5 +25,6 @@ INSERT INTO plant (name, crop) values
 ('Yellow Archangel',FALSE),
 ('English Ivy', FALSE);
 INSERT INTO spray (name, price) VALUES
-('Round Up',10);
+('Round Up',10)
+();
 

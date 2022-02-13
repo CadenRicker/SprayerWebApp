@@ -1,0 +1,127 @@
+<!-- 
+This is the query form page 
+Created by Evan Humphry
+Modified on: 05/13/20
+5/13/20: Added date selection feature. Removed things that aren't being used.
+-->
+
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>Home</title>
+    <link href="../static/covidTracker.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootswatch@4.5.2/dist/litera/bootstrap.min.css" integrity="sha384-enpDwFISL6M3ZGZ50Tjo8m65q06uLVnyvkFO3rsoW0UC15ATBFz3QEhr3hmxpYsn" crossorigin="anonymous">
+  </head>
+  <body class="background">
+       <!-- navbar -->
+     <div class="bs-example">
+            <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+                <a href="#" class="navbar-brand">
+                   Sprayer Application
+                </a>
+                <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+        
+                <div class="collapse navbar-collapse" id="navbarCollapse">
+                    <div class="navbar-nav">
+
+                    </div>
+                   
+                    <div class="navbar-nav ml-auto">                           
+                            <a href="/Login" class="nav-item nav-link">Login</a>
+                    
+                    </div>
+
+                </div>
+            </nav>
+        </div>
+
+
+        {% set numOfCrops = cropIdList | int %}
+        {% set numOfWeeds = weedIdList | int %}
+            <div class="login-form">
+            <form action= "http://localhost:5000/result" method = 'POST'> 
+              <h2 class="text">Crops</h2> 
+                {%for i in range(1,numOfCrops+1)%}
+                  {% if i != 1 %}
+                    <style>#cropdiv{{i}}{
+                        display : none;
+                    }</style>
+                  {% endif %}
+                  
+                  <div class="form-group" id="cropdiv{{i}}" >
+                    <label >Crop: {{i}}</label>
+                    <select class="form-control" name="crop{{i}}" >
+                      {% if i != 1 %}
+                        <option value = "none">none</option>
+                      {%endif%}
+                      {% for crop in crops %}
+                        {% if i == 1 and crop == crop[0] %}
+                        <option value={{crop[0]}}>{{crop[0]}}</option>
+                        {%else%}
+                        <option>{{crop[0]}}</option>
+                        {%endif%}
+                        
+                      {% endfor %}
+                    </select>
+                  {% if i< numOfCrops %}
+                    <button type="button" class="btn btn-secondary" id="cropBtn{{i}}" onclick="showNext('cropdiv{{i+1}}','cropBtn{{i}}')">Add another</button>
+                  {%endif%}
+                  </div>
+                {% endfor %}
+                <h2 class="text">Weeds</h2> 
+                {%for i in range(1,numOfWeeds+1)%}
+                  {% if i != 1 %}
+                    <style>#weeddiv{{i}}{
+                        display : none;
+                    }</style>
+                  {% endif %}
+                  
+                  <div class="form-group" id="weeddiv{{i}}" >
+                    <label >Weed: {{i}}</label>
+                    <select class="form-control" name="weed{{i}}" >
+                      {% if i != 1 %}
+                        <option value = "none">none</option>
+                      {%endif%}
+                      {% for weed in weeds %}
+                        {% if i == 1 and weed == weed[0] %}
+                        <option value={{weed[0]}}>{{weed[0]}}</option>
+                        {%else%}
+                        <option>{{weed[0]}}</option>
+                        {%endif%}
+                        
+                      {% endfor %}
+                    </select>
+                  {% if i< numOfWeeds %}
+                    <button type="button" class="btn btn-secondary" id="weedBtn{{i}}" onclick="showNext('weeddiv{{i+1}}','weedBtn{{i}}')">Add another</button>
+                  {%endif%}
+                  </div>
+                {% endfor %}
+                <h2>Acreage</h2>
+                <input type="number" class="form-control" name="numAcr" value="10" min="0.1" step="0.001" >
+                <div class="form-group">
+                    <button type="submit" value ="Submit" class="btn btn-primary">Get Suggestions</button>
+                </div>                     
+            </form>  
+          </div> 
+         
+          <script>
+            function showNext(divId,btnId) {
+              var nextdiv = document.getElementById(divId);
+              nextdiv.style.display = "block";
+              var btn = document.getElementById(btnId);
+              btn.style.display = "none"
+            }
+            </script>
+
+<!-- Extra JavaScript/CSS added manually in "Settings" tab -->
+<!-- Include jQuery -->
+<script type="text/javascript" src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+
+
+  </body>
+</html>
