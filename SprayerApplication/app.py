@@ -37,13 +37,13 @@ def result():
         for i in range(2,cropIdList+1):
             value = request.form["crop{}".format(i)]
             if value != "none":
-                crops= crops+"\'{}\'".format()
+                crops= crops+"'{}'".format(value)
         weeds ="\'{}\'".format(request.form["weed1"])
         
         for i in range(2,weedIdList+1):
             value = request.form["weed{}".format(i)]
             if value != "none":
-                weeds= weeds+"\',{}\'".format(request.form["weed{}".format(i)])
+                weeds= weeds+"\',{}\'".format(value)
         print(crops)
         print(weeds)
         numOfAcres = request.form["numAcr"]

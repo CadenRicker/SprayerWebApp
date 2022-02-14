@@ -55,20 +55,22 @@ Modified on: 05/13/20
                   
                   <div class="form-group" id="cropdiv{{i}}" >
                     <label >Crop: {{i}}</label>
-                    <select class="form-control" name="crop{{i}}" >
-                      {% if i != 1 %}
-                        <option value = "none">none</option>
+                    {% if i == 1 %}
+                      <input list="crop{{i}}s" class="form-control"  name="crop{{i}}" id="crop{{i}}" value="{{crops[0][0]}}" autocomplete="on">
+                    {%else%}
+                      <input list="crop{{i}}s"  class="form-control" name="crop{{i}}" id="crop{{i}}" value="none" autocomplete="on" >
+                    {%endif%}
+                    
+                    <datalist  id="crop{{i}}s" class="form-select" >
+                      {% if i != 1%}
+                        <option value="none">None</option>
                       {%endif%}
-                      {% for crop in crops %}
-                        {% if i == 1 and crop == crop[0] %}
-                        <option value={{crop[0]}}>{{crop[0]}}</option>
-                        {%else%}
-                        <option>{{crop[0]}}</option>
-                        {%endif%}
-                        
+                      {% for crop in crops %}                        
+                        <option value="{{crop[0]}}">                        
                       {% endfor %}
-                    </select>
+                    </datalist>
                   {% if i< numOfCrops %}
+
                     <button type="button" class="btn btn-secondary" id="cropBtn{{i}}" onclick="showNext('cropdiv{{i+1}}','cropBtn{{i}}')">Add another</button>
                   {%endif%}
                   </div>
@@ -96,6 +98,7 @@ Modified on: 05/13/20
                         
                       {% endfor %}
                     </select>
+                 
                   {% if i< numOfWeeds %}
                     <button type="button" class="btn btn-secondary" id="weedBtn{{i}}" onclick="showNext('weeddiv{{i+1}}','weedBtn{{i}}')">Add another</button>
                   {%endif%}
@@ -117,6 +120,31 @@ Modified on: 05/13/20
               btn.style.display = "none"
             }
             </script>
+          <script>
+            // Find all inputs on the DOM which are bound to a datalist via their list attribute.
+                var inputs = document.querySelectorAll('input[list]');
+                for (var i = 0; i < inputs.length; i++) {
+                // When the value of the input changes...
+                inputs[i].addEventListener('change', function() {
+                var optionFound = false,
+                datalist = this.list;
+                // Determine whether an option exists with the current value of the input.
+                for (var j = 0; j < datalist.options.length; j++) {
+                if (this.value == datalist.options[j].value) {
+                optionFound = true;
+                break;
+                }
+                }
+                // use the setCustomValidity function of the Validation API
+                // to provide an user feedback if the value does not exist in the datalist
+                if (optionFound) {
+                this.setCustomValidity('');
+                } else {
+                this.setCustomValidity('Please select a valid value.');
+                }
+                });
+                }
+          </script>
 
 <!-- Extra JavaScript/CSS added manually in "Settings" tab -->
 <!-- Include jQuery -->

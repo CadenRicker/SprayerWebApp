@@ -18,6 +18,7 @@ CREATE TABLE SpraySafe(
     sprayName varchar(20) ,
     plantName varchar(20) ,
     rating  int,
+    safe BOOLEAN,
     concentration Decimal(15,4),
     gallonsPerAcr DECIMAL(15,4),
     primary key (sprayName, plantName),
