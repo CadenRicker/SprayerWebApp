@@ -4,7 +4,7 @@ drop table plant;
 drop table spray;
 
 CREATE TABLE plant (
-    name varchar(20) UNIQUE,
+    name varchar(30) UNIQUE,
     crop boolean,
     primary key (name)
 );
