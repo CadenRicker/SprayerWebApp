@@ -14,7 +14,7 @@ CREATE TABLE spray(
     price Decimal(13,2),
     primary key (name)
 );
-CREATE TABLE SpraySafe(
+CREATE TABLE SprayData(
     sprayName varchar(20) ,
     plantName varchar(20) ,
     rating  int,
