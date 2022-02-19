@@ -1,5 +1,5 @@
 USE SprayCatalog;
-drop table SpraySafe;
+drop table SprayData;
 drop table plant;
 drop table spray;
 
@@ -10,15 +10,15 @@ CREATE TABLE plant (
 );
 
 CREATE TABLE spray(
-    name varchar(20) UNIQUE ,
+    name varchar(30) UNIQUE ,
     price Decimal(13,2),
     primary key (name)
 );
 CREATE TABLE SprayData(
-    sprayName varchar(20) ,
-    plantName varchar(20) ,
+    sprayName varchar(30) ,
+    plantName varchar(30) ,
     rating  int,
-    safe BOOLEAN,
+    safes BOOLEAN,
     concentration Decimal(15,4),
     gallonsPerAcr DECIMAL(15,4),
     primary key (sprayName, plantName),
