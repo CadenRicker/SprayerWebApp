@@ -8,7 +8,7 @@ def addPlantNames(cursor,plants,isCrop):
     lists=[]
     values ='INSERT INTO plant (name, crop) values '
     for plant in plants :
-        values=values+"('{}',{}),".format(plant[0],isCrop)
+        values=values+"('{}',{}),".format((plant[0]).lower(),isCrop)
         lists.append(plant[0])
     values = values[:-1] # rmoves extra comma
     try:
@@ -21,7 +21,7 @@ def addPlantNames(cursor,plants,isCrop):
 def addSprays(cursor,sprays):
     values ='INSERT INTO spray (name,price) values '
     for spray in sprays:
-        values = values +"('{}',{}),".format(spray[0],spray[1])
+        values = values +"('{}',{}),".format( (spray[0]).lower(),spray[1])
     values = values[:-1]
     try:
         cursor.execute(values)
@@ -29,35 +29,42 @@ def addSprays(cursor,sprays):
         print(e)
     return
 
-def addSprayData(cursor,data,safe,lists):
+def addSprayData(cursor,data,safe):
     cursor.execute("Select name from spray")
     queryresult=list(cursor.fetchall())
     sprayNames=[]
     for name in queryresult:
         sprayNames.append(name[0])
+    cursor.execute("Select name from plant")
+    queryresult=list(cursor.fetchall())
+    plantNames=[]
+    for name in queryresult:
+        plantNames.append(name[0])
+
     for sprayData in data:
         sprays = list(sprayData[:10])
         sprays = sprays[:sprays.index(numpy.nan)]
+
         plants = list(sprayData[10:])
         if numpy.nan in plants:
             plants = plants[:plants.index(numpy.nan)]
-        
         insertStr = 'INSERT INTO SprayData (sprayName,plantName,safes) values '
         values = ''
         addedValues=[]
         for plant in plants:
+            plant = plant.lower()
             string ="('@','{}',{}),\n".format(plant,safe)
-            if plant in lists and string not in addedValues :
+            if plant in plantNames:
                 values = values+string
-                addedValues.append(string)
         fValues =''
         addedSprays =[]      
         for spray in sprays:
+            spray=spray.lower()
             if spray in sprayNames and spray not in addedSprays:
                 fValues = fValues + values.replace('@',spray)
                 addedSprays.append(spray)
         fValues=insertStr+fValues[:-2]
-        
+        print(fValues)
         try:
             if len(fValues)>len(insertStr)+5:
                 cursor.execute(fValues)
@@ -90,10 +97,10 @@ def main():
             addSprays(cursor,sprayNames)
         #add sprayData for crops
             cropsSpray=(pd.read_excel(xls,'SafeOn').T).values
-            addSprayData(cursor,cropsSpray,True,plantList)
+            addSprayData(cursor,cropsSpray,True)
         #add sprayData for weeds         
             weedsSpray = (pd.read_excel(xls,'Kill').T).values
-            addSprayData(cursor,weedsSpray,False,plantList)
+            addSprayData(cursor,weedsSpray,False)
 
         mydb.commit()
 if __name__=='__main__':
