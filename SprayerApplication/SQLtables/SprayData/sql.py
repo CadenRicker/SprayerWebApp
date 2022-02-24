@@ -5,82 +5,111 @@ import mysql.connector
 import config
 
 def addPlantNames(cursor,plants,isCrop):
-    lists=[]
     values ='INSERT INTO plant (name, crop) values '
     for plant in plants :
-        values=values+"('{}',{}),".format((plant[0]).lower(),isCrop)
-        lists.append(plant[0])
-    values = values[:-1] # rmoves extra comma
+        values=values+"('{}',{}),\n".format((plant[0]).lower(),isCrop)
+    values = values[:-2] # rmoves extra comma
+    #print(values)
     try:
         cursor.execute(values)
     except Exception as e:
-        print(e)
-    return lists
-
+       print("error in add plants")
+       print(e)
+    return
 
 def addSprays(cursor,sprays):
     values ='INSERT INTO spray (name,price) values '
     for spray in sprays:
-        values = values +"('{}',{}),".format( (spray[0]).lower(),spray[1])
-    values = values[:-1]
+        values = values +"('{}',{}),\n".format( (spray[0]).lower(),spray[1])
+    values = values[:-2]
     try:
         cursor.execute(values)
     except Exception as e:
+        print("error in add sprays")
         print(e)
+        print(values+";")
     return
-
-def addSprayData(cursor,data,safe):
-    cursor.execute("Select name from spray")
-    queryresult=list(cursor.fetchall())
+def addCropSprayData(cursor,data):
+    cropNames=[]
     sprayNames=[]
-    for name in queryresult:
-        sprayNames.append(name[0])
-    cursor.execute("Select name from plant")
-    queryresult=list(cursor.fetchall())
-    plantNames=[]
-    for name in queryresult:
-        plantNames.append(name[0])
-
-    for sprayData in data:
-        sprays = list(sprayData[:10])
-        sprays = sprays[:sprays.index(numpy.nan)]
-
-        plants = list(sprayData[10:])
-        if numpy.nan in plants:
-            plants = plants[:plants.index(numpy.nan)]
-        insertStr = 'INSERT INTO SprayData (sprayName,plantName,safes) values '
-        values = ''
-        addedValues=[]
-        for plant in plants:
-            plant = plant.lower()
-            string ="('@','{}',{}),\n".format(plant,safe)
-            if plant in plantNames:
-                values = values+string
-        fValues =''
-        addedSprays =[]      
-        for spray in sprays:
-            spray=spray.lower()
-            if spray in sprayNames and spray not in addedSprays:
-                fValues = fValues + values.replace('@',spray)
-                addedSprays.append(spray)
-        fValues=insertStr+fValues[:-2]
-        print(fValues)
-        try:
-            if len(fValues)>len(insertStr)+5:
-                cursor.execute(fValues)
-        except Exception as e:
-           print(e)
-    return
-
+    try:
+        cursor.execute("select name from plant where crop=True")
+        cropQueryResult = cursor.fetchall()
+        cursor.execute("select name from spray")
+        sprayQueryResult=cursor.fetchall()
         
+        for weed in cropQueryResult:
+            cropNames.append(weed[0])
+        
+        for spray in sprayQueryResult:
+            sprayNames.append(spray[0])
+    
+    except Exception as e:
+        print(e)
+    insertString = ''
+    
+    for row in data:
+        row = list(row)
+        spray = row[0].lower()
+        crop = row[1].lower()
+        if spray in sprayNames and crop in cropNames:
+            insertString=insertString+"('{}','{}',{}),\n".format(spray ,crop,row[2])
+    if len(insertString)>1:
+        try:
+            insertString ="Insert INTO CropSprayData (sprayName,plantName,concentration) values \n"+insertString[:-2]
+            cursor.execute(insertString)
+        except Exception as e:
+            print("execption in add crop spray data")
+            print(e)
+            print(insertString)
+    return
+def addWeedSprayData(cursor,data):
+    weedNames=[]
+    sprayNames=[]
+    try:
+        cursor.execute("select name from plant where crop<>True")
+        weedQueryResult = cursor.fetchall()
+        cursor.execute("select name from spray")
+        sprayQueryResult=cursor.fetchall()
+        
+        for weed in weedQueryResult:
+            weedNames.append(weed[0])
+        
+        for spray in sprayQueryResult:
+            sprayNames.append(spray[0])
+    except Exception as e:
+        print(e)
+    insertString=""
+    for row in data:
+        spray=(row[0]).lower()
+        weeds = list(row[1:])
+        if numpy.nan in weeds:
+            weeds=weeds[:weeds.index(numpy.nan)]
+
+        if spray in sprayNames:
+            for weed in weeds:
+                weed=weed.lower()
+                if weed in weedNames:
+                    insertString= insertString+"('{}','{}'),\n".format(spray,weed)
+    if len(insertString)>0:
+        try:
+            insertString = "Insert into WeedSprayData (sprayName,plantName) values\n"+insertString[:-2]
+            #print(insertString+";")
+            cursor.execute(insertString)
+        except Exception as e:
+            print("execption in add weed spray data")
+            print(e)
+            print (insertString+";")
+    return;
+
 def main():
     mydb = mysql.connector.connect(host=config.host,user =config.user,password  =config.password,database  =config.database)
     with mydb.cursor() as cursor:
         try:
-            cursor.execute("delete from SprayData where True = True")
+            cursor.execute("delete from CropSprayData where True = True")
+            cursor.execute("delete from WeedSprayData where True = True")
             cursor.execute("delete from plant where True = True")
             cursor.execute("delete from spray where True = True")
-            cursor.execute("delete from SprayData where True = True")
         except Exception as e:
             print(e)
         mydb.commit()
@@ -88,19 +117,19 @@ def main():
             plantList=[]
         #add crop names
             cropNames =(pd.read_excel(xls,'Crop Names')).values
-            plantList =addPlantNames(cursor,cropNames,True)
+            addPlantNames(cursor,cropNames,True)
         #add weeds to weeds table
             weedNames = (pd.read_excel(xls,'Weed Names')).values
-            plantList = plantList+ addPlantNames(cursor,weedNames,False)
+            addPlantNames(cursor,weedNames,False)
         #add sprays
             sprayNames=(pd.read_excel(xls,'Spray Names')).values
             addSprays(cursor,sprayNames)
         #add sprayData for crops
-            cropsSpray=(pd.read_excel(xls,'SafeOn').T).values
-            addSprayData(cursor,cropsSpray,True)
+            cropsSpray=(pd.read_excel(xls,'SafeOn')).values
+            addCropSprayData(cursor,cropsSpray)
         #add sprayData for weeds         
             weedsSpray = (pd.read_excel(xls,'Kill').T).values
-            addSprayData(cursor,weedsSpray,False)
+            addWeedSprayData(cursor,weedsSpray)
 
         mydb.commit()
 if __name__=='__main__':
