@@ -24,7 +24,7 @@ def filterQuery(result):
             sprayPrices.append(row[2])
 
     weeds.append(weedRow)
-    zippedList =list(zip(sprayNames,weeds,sprayPrices))
+    zippedList =list(zip(sprayNames,sprayPrices,weeds))
     orderByList.append(len(weedRow))
     zippedList = sortByList(orderByList,zippedList)
     return zippedList

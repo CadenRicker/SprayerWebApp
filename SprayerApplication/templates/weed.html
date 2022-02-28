@@ -1,8 +1,5 @@
 <!-- 
-This is the query form page 
-Created by Evan Humphry
-Modified on: 05/13/20
-5/13/20: Added date selection feature. Removed things that aren't being used.
+
 -->
 
 
@@ -40,45 +37,43 @@ Modified on: 05/13/20
             </nav>
         </div>
         {% set numOfWeeds = weedIdList | int %}
-
-            <div class="login-form">
-            <form action= "http://localhost:5000/sprayerInfo" method = 'POST'> 
-              <h2 class="text">Crops</h2> 
-
-                  <style>#weeddiv{{i}} {
-                      display : none;
-                  }</style>
-                {% endif %}
-                
-                <div class="form-group" id="weeddiv{{i}}" >
-                  <label >Weed: {{i}}</label>
-                  {% if i == 1 %}
-                    <input list="weeds{{i}}s" class="form-control"  name="weed{{i}}" id="weed{{i}}" value="{{weeds[0][0]}}" autocomplete="on">
-                  {%else%}
-                    <input list="weeds{{i}}s"  class="form-control" name="weed{{i}}" id="weed{{i}}" value="none" autocomplete="on" >
-                  {%endif%}
-                  
-                  <datalist  id="weed{{i}}s" class="form-select" >
-                    {% if i != 1%}
-                      <option value="none">None</option>
-                    {%endif%}
-                    {% for weed in weeds %}                        
-                      <option value="{{weed[0]}}">                        
-                    {% endfor %}
-                  </datalist>
-                {% if i< numOfWeeds %}
-                  <button type="button" class="btn btn-secondary" id="weedBtn{{i}}" onclick="showNext('weeddiv{{i+1}}','weedBtn{{i}}')">Add another</button>
+        <div class="login-form">
+        <form action= "http://localhost:5000/spray" method = 'POST'> 
+          <h2 class="text">Weeds</h2> 
+          {%for i in range(1,numOfWeeds+1)%}
+            {% if i != 1 %} 
+              <style>#weeddiv{{i}} {
+                  display : none;
+              }</style>
+            {% endif %}
+            
+            <div class="form-group" id="weeddiv{{i}}" >
+              <label >Weed: {{i}}</label>
+              {% if i == 1 %}
+                <input list="weed{{i}}s" class="form-control"  name="weed{{i}}" id="weed{{i}}" value="{{weeds[0]}}" autocomplete="on">
+              {%else%}
+                <input list="weed{{i}}s"  class="form-control" name="weed{{i}}" id="weed{{i}}" value="none" autocomplete="on" >
+              {%endif%}
+              
+              <datalist  id="weed{{i}}s" class="form-select" >
+                {% if i != 1%}
+                  <option value="none">None</option>
                 {%endif%}
-                </div>
-              {% endfor %}
+                {% for weed in weeds %}                        
+                  <option value="{{weed}}">                        
+                {% endfor %}
+              </datalist>
+            {% if i< numOfWeeds %}
+              <button type="button" class="btn btn-secondary" id="weedBtn{{i}}" onclick="showNext('weeddiv{{i+1}}','weedBtn{{i}}')">Add another</button>
+            {% endif %}
+            </div>
+          {% endfor %}
 
-                <h2>Acreage</h2>
-                <input type="number" class="form-control" name="numAcr" value="10" min="0.1" step="0.001" >
-                <div class="form-group">
-                    <button type="submit" value ="Submit" class="btn btn-primary">Get Suggestions</button>
-                </div>                     
-            </form>  
-          </div> 
+            <div class="form-group">
+                <button type="submit" value ="Submit" class="btn btn-primary">Get Suggestions</button>
+            </div>                     
+        </form>  
+      </div> 
          
           <script>
             function showNext(divId,btnId) {

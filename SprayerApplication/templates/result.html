@@ -44,6 +44,7 @@ Modified on: 05/13/20
           cursor: pointer;
         }
       </style>
+      {% set Acres = numAcr | float %}
       <div class="login-form">
         <table class="table table-hover">
             <thead>
@@ -51,14 +52,24 @@ Modified on: 05/13/20
                 <th scope="col">Herbicide</th>
                 <th scope="col"> pints per accer</th>
                 <th scope="col"> Cost </th>
+                <th scope="col"> Weeds</th>
               </tr>
             </thead>
             <tbody>
              {% for row in data%}
               <tr class="table-secondary" data-href="spray/{{row[0]}}">
-                <th scope="row">{{row[0]}}</th>
-                <td>{{row[1]}}</td>
-                <td>{{row[2]}}</td>
+                <th scope="row">{{row[0]}}</th><!--Spray Name-->
+                <td>{{row[3]}}</td>
+                {% set ppa = row[3] |float %}
+                {% set price = row[1] |float%}
+                <td>{{"%.2f"|format(ppa*0.125*price*Acres)}}
+                <td>
+                  <ul>
+                    {% for weed in row[2] %}
+                      <li>{{weed}}</li>
+                    {% endfor %}
+                    </td>
+                  </ul>
               </tr>
               {% endfor%}
             </tbody>
