@@ -1,3 +1,4 @@
+from re import A
 from flask import Flask, render_template, request, redirect, url_for, session
 from flask_mysqldb import MySQL
 import config
@@ -22,9 +23,9 @@ def index():
 @app.route("/crop", methods=['POST', 'GET'])
 def crop():
     if request.method == 'POST':
-        session['numOfAcr']=request.form['numOfAcr']
-        session['tankSize']=request.form['tankSize']
+        session['numOfAcr']=request.form['numAcr']
         session['GPA']=request.form['GPA']
+        session['tankSize']=request.form['tankSizeG']
     try:
         cursor = mysql.connect.cursor()
         cursor.execute("select name from plant where crop = true")
@@ -99,36 +100,41 @@ def spray():
     weeds=weeds[:-1]+")"
     sprayQuery= session['sprays']
     report =None
+    cursor = mysql.connect.cursor()
     try:
-        cursor = mysql.connect.cursor()
-        query="select sprayName, plantName, price from WeedSprayData as weed, spray where  spray.name = weed.sprayName and weed.plantName in {} and weed.sprayName in {}".format(weeds,sprayQuery)
+        query="select sprayName, plantName, price from WeedSprayData as weed, spray where  spray.name = weed.sprayName and weed.plantName in {} and weed.sprayName in {} order by weed.sprayName".format(weeds,sprayQuery)
         cursor.execute(query)
         result=cursor.fetchall()
-        cursor.close()
-        report =filterQuery(result=result)              
+        report =filterQuery(result=result)
+                    
     except Exception as e:
         print(e)
+    fullReport=[]
     try:
         crops=session['crops']
         listOfCrops = "("
         for crop in crops:
-            listOfCrops="{}{},".format(listOfCrops,crop)
+            listOfCrops="{}'{}',".format(listOfCrops,crop)
         listOfCrops = listOfCrops[:-1]+")"
-        fullReport=[]
         for row in report:
-            query="SELECT MIN(concentation) from CropSprayData where sprayName='{}' and plantName in {}".format(row[0],listOfCrops)
+            query="SELECT MIN(concentration) from CropSprayData where sprayName='{}' and plantName in {}".format(row[0],listOfCrops)
             cursor.execute(query)
-            concentration=cursor.fetchall()
-            fullReport.append(row.append(concentration))
+            result=cursor.fetchone()
+            concentration =  "{:.2f}".format(result[0])
+            row.append(concentration)            
+            fullReport.append(row)
         session['sprayReport']=fullReport
     except Exception as e:
         print(e)
-    return render_template("result.html", data=fullReport,numOfAcr = session['numOfAcr'])
+        print("exception")
+    return render_template("result.html", data=fullReport,numAcr = session['numOfAcr'])
 
 @app.route('/spray/<spray>')
 def calcSpray(spray):
 
     return spray
-
+@app.route('/login')
+def loadLogin():
+    return render_template("login.html")
 if __name__ == '__main__':
     app.run(debug=True)

@@ -62,7 +62,7 @@ Modified on: 05/13/20
                 <td>{{row[3]}}</td>
                 {% set ppa = row[3] |float %}
                 {% set price = row[1] |float%}
-                <td>{{"%.2f"|format(ppa*0.125*price*Acres)}}
+                <td>{{"%.2f"|format(ppa*8*price*Acres)}}
                 <td>
                   <ul>
                     {% for weed in row[2] %}

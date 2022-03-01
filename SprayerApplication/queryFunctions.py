@@ -1,7 +1,6 @@
 def sortByList(list1,list2):
     zipped_lists = zip(list1, list2)
     sorted_pairs = sorted(zipped_lists, reverse=True)
-
     tuples = zip(*sorted_pairs)
     list1, list2 = [ list(tuple) for tuple in  tuples]
     return list2
@@ -22,12 +21,16 @@ def filterQuery(result):
             weedRow=[row[1]]
             sprayNames.append(last)
             sprayPrices.append(row[2])
-
+           
     weeds.append(weedRow)
     zippedList =list(zip(sprayNames,sprayPrices,weeds))
     orderByList.append(len(weedRow))
     zippedList = sortByList(orderByList,zippedList)
-    return zippedList
+    filtterd =[]
+    for row in zippedList:
+        tmpRow =[row[0],"{:.2f}".format(row[1]),row[2]]
+        filtterd.append(tmpRow)
+    return filtterd
 def main():
     result =[['2 4-d lv 4 winfield united','dandelion',21.00],
     ['2 4-d amine 4 albaugh','bitterweed',31.00],
