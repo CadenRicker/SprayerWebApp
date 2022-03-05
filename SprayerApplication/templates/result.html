@@ -17,79 +17,53 @@ Modified on: 05/13/20
   </head>
   <body class="background">
        <!-- navbar -->
-     <div class="bs-example">
-        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-            <a href="#" class="navbar-brand">
-                Sprayer Application
-            </a>
-            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-    
-            <div class="collapse navbar-collapse" id="navbarCollapse">
-                <div class="navbar-nav">
+    <div class="bs-example">
+      <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+          <a href="#" class="navbar-brand">
+              Sprayer Application
+          </a>
+          <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
+              <span class="navbar-toggler-icon"></span>
+          </button>
+  
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+              <div class="navbar-nav">
 
-                </div>
-                
-                <div class="navbar-nav ml-auto">                           
-                        <a href="/Login" class="nav-item nav-link">Login</a>
-                
-                </div>
+              </div>
+              
+              <div class="navbar-nav ml-auto">                           
+                      <a href="/" class="nav-item nav-link">Home</a>
+                      <a href="http://localhost:5000/login" class="nav-item nav-link">Login</a>   
+              
+              </div>
 
-            </div>
-        </nav>
-      </div>
-      <style>
-        tr[data-href]{
-          cursor: pointer;
-        }
-      </style>
-      {% set Acres = numAcr | float %}
+          </div>
+      </nav>
+      
+      </div>       
+      
       <div class="login-form">
-        <table class="table table-hover">
-            <thead>
-              <tr class="table-primary">
-                <th scope="col">Herbicide</th>
-                <th scope="col"> pints per accer</th>
-                <th scope="col"> Cost </th>
-                <th scope="col"> Weeds</th>
-              </tr>
-            </thead>
-            <tbody>
-             {% for row in data%}
-              <tr class="table-secondary" data-href="spray/{{row[0]}}">
-                <th scope="row">{{row[0]}}</th><!--Spray Name-->
-                <td>{{row[3]}}</td>
-                {% set ppa = row[3] |float %}
-                {% set price = row[1] |float%}
-                <td>{{"%.2f"|format(ppa*8*price*Acres)}}
-                <td>
-                  <ul>
-                    {% for weed in row[2] %}
-                      <li>{{weed}}</li>
-                    {% endfor %}
-                    </td>
-                  </ul>
-              </tr>
-              {% endfor%}
-            </tbody>
-          </table>
-        </div> 
-       
-      <script>
-        document.addEventListener("DOMContentLoaded",()=>{
-          const rows =document.querySelectorAll("tr[data-href]");
-          rows.forEach(row =>{
-            row.addEventListener('click',()=>{
-              window.location.href = row.dataset.href;
-            });
-          });
-        });
-      </script>
+        <form action= "" method = 'POST'>
+        <h1>{{report[0]}}</h1>
+        <h2>Gallons Of Herbicide: {{report[1]}}</h2>
+        <h2>Cost: ${{report[2]}}</h2>
+        {%if report[3][0] >0%}
+          <h2>Full Tanks: {{report[3][0]}}</h2>
+          <h3>Gallons of Herbicide Per Full Tank: {{report[3][1]}}</h3>
+        {% endif%}
+        {% if report[4][0] > 0 %}
+        <h2>Partial Tank:</h2>
+        <h3>Herbicide for Partial Tank: {{report[4][0]}}</h3>
+        <h3>Water for Partial Tank: {{report[4][1]}}</h3>
+        {%endif%}
 
-<!-- Extra JavaScript/CSS added manually in "Settings" tab -->
-<!-- Include jQuery -->
-<script type="text/javascript" src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+        </form>
+      </div>
+        
+
+    <!-- Extra JavaScript/CSS added manually in "Settings" tab -->
+    <!-- Include jQuery -->
+    <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
 
 
   </body>

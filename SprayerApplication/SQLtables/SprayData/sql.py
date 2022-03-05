@@ -1,3 +1,4 @@
+from fileinput import filename
 from ipaddress import AddressValueError
 import pandas as pd
 import numpy
@@ -102,7 +103,7 @@ def addWeedSprayData(cursor,data):
             print (insertString+";")
     return;
 
-def main():
+def run(filename):
     mydb = mysql.connector.connect(host=config.host,user =config.user,password  =config.password,database  =config.database)
     with mydb.cursor() as cursor:
         try:
@@ -110,11 +111,12 @@ def main():
             cursor.execute("delete from WeedSprayData where True = True")
             cursor.execute("delete from plant where True = True")
             cursor.execute("delete from spray where True = True")
+            cursor.execute("delete from users where True = True")
         except Exception as e:
             print(e)
         mydb.commit()
-        with pd.ExcelFile('SprayData.xlsx') as xls:
-            plantList=[]
+        cursor.execute("Insert into users (username, passwd) values ('CPS','CPS'), ('Loveland','Loveland')")
+        with pd.ExcelFile(filename) as xls:
         #add crop names
             cropNames =(pd.read_excel(xls,'Crop Names')).values
             addPlantNames(cursor,cropNames,True)
@@ -133,4 +135,4 @@ def main():
 
         mydb.commit()
 if __name__=='__main__':
-    main()
+    run('SprayData.xlsx')

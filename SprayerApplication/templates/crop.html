@@ -29,7 +29,8 @@
                     </div>
                    
                     <div class="navbar-nav ml-auto">                           
-                            <a href="/Login" class="nav-item nav-link">Login</a>                    
+                            <a href="/" class="nav-item nav-link">Home</a>
+                            <a href="http://localhost:5000/login" class="nav-item nav-link">Login</a>                    
                     </div>
                 </div>
             </nav>
@@ -48,7 +49,7 @@
             <div class="form-group" id="cropdiv{{i}}" >
               <label >Crop: {{i}}</label>
               {% if i == 1 %}
-                <input list="crop{{i}}s" class="form-control"  name="crop{{i}}" id="crop{{i}}" value="{{crops[0][0]}}" autocomplete="on">
+                <input list="crop{{i}}s" class="form-control"  name="crop{{i}}" id="crop{{i}}" value="{{crops[0]}}" autocomplete="on">
               {%else%}
                 <input list="crop{{i}}s"  class="form-control" name="crop{{i}}" id="crop{{i}}" value="none" autocomplete="on" >
               {%endif%}
@@ -58,7 +59,7 @@
                   <option value="none">None</option>
                 {%endif%}
                 {% for crop in crops %}                        
-                  <option value="{{crop[0]}}">                        
+                  <option value="{{crop}}">                        
                 {% endfor %}
               </datalist>
             {% if i< numOfCrops %}

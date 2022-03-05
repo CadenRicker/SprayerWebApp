@@ -1,0 +1,97 @@
+<!-- 
+This is the query form page 
+Created by Evan Humphry
+Modified on: 05/13/20
+5/13/20: Added date selection feature. Removed things that aren't being used.
+-->
+
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>Home</title>
+    <link href="../static/covidTracker.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootswatch@4.5.2/dist/litera/bootstrap.min.css" integrity="sha384-enpDwFISL6M3ZGZ50Tjo8m65q06uLVnyvkFO3rsoW0UC15ATBFz3QEhr3hmxpYsn" crossorigin="anonymous">
+  </head>
+  <body class="background">
+       <!-- navbar -->
+     <div class="bs-example">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+            <a href="#" class="navbar-brand">
+                Sprayer Application
+            </a>
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+    
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+                <div class="navbar-nav">
+
+                </div>
+                
+                <div class="navbar-nav ml-auto">                           
+                        <a href="/" class="nav-item nav-link">Home</a>
+                        <a href="http://localhost:5000/login" class="nav-item nav-link">Login</a>   
+                
+                </div>
+
+            </div>
+        </nav>
+      </div>
+      <style>
+        tr[data-href]{
+          cursor: pointer;
+        }
+      </style>
+      {% set Acres = numAcr | float %}
+      <div class="login-form">
+        <table class="table table-hover">
+            <thead>
+              <tr class="table-primary">
+                <th scope="col">Herbicide</th>
+                <th scope="col"> pints per accer</th>
+                <th scope="col"> Cost </th>
+                <th scope="col"> Weeds</th>
+              </tr>
+            </thead>
+            <tbody>
+             {% for row in data%}
+              <tr class="table-secondary" data-href="spray/{{row[0]}}">
+                <th scope="row">{{row[0]}}</th><!--Spray Name-->
+                <td>{{row[3]}}</td>
+                {% set ppa = row[3] |float %}
+                {% set price = row[1] |float%}
+                <td>{{"%.2f"|format(ppa*0.125*price*Acres)}}
+                <td>
+                  <ul>
+                    {% for weed in row[2] %}
+                      <li>{{weed}}</li>
+                    {% endfor %}
+                    </td>
+                  </ul>
+              </tr>
+              {% endfor%}
+            </tbody>
+          </table>
+        </div> 
+       
+      <script>
+        document.addEventListener("DOMContentLoaded",()=>{
+          const rows =document.querySelectorAll("tr[data-href]");
+          rows.forEach(row =>{
+            row.addEventListener('click',()=>{
+              window.location.href = row.dataset.href;
+            });
+          });
+        });
+      </script>
+
+<!-- Extra JavaScript/CSS added manually in "Settings" tab -->
+<!-- Include jQuery -->
+<script type="text/javascript" src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+
+
+  </body>
+</html>

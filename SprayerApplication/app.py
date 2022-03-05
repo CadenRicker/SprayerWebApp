@@ -1,13 +1,15 @@
-from re import A
+from crypt import methods
+from unittest import result
 from flask import Flask, render_template, request, redirect, url_for, session
 from flask_mysqldb import MySQL
+from numpy import place
 import config
-from queryFunctions import filterQuery
+from supportFunctions import *
 SECRET_KEY = 'GDtfDCFYjD'
 app = Flask(__name__,
-            instance_relative_config=False,
-            template_folder="templates",
-            static_folder="static")
+			instance_relative_config=False,
+			template_folder="templates",
+			static_folder="static")
 app.config['MYSQL_HOST'] = config.host
 app.config['MYSQL_USER'] = config.user
 app.config['MYSQL_PASSWORD'] = config.password
@@ -16,125 +18,81 @@ mysql = MySQL(app)
 app.secret_key = 'abc'
 cropIdList=3
 weedIdList=5
+maxNumberOfCrops=100
+maxNumberOfWeeds=100
 # Home Page
 @app.route("/")
 def index():
-    return render_template("index.html")
+	return render_template("index.html")
+# Crop page
 @app.route("/crop", methods=['POST', 'GET'])
-def crop():
-    if request.method == 'POST':
-        session['numOfAcr']=request.form['numAcr']
-        session['GPA']=request.form['GPA']
-        session['tankSize']=request.form['tankSizeG']
-    try:
-        cursor = mysql.connect.cursor()
-        cursor.execute("select name from plant where crop = true")
-        crops = cursor.fetchall()        
-    except Exception as e:  # catches random errors
-        return render_template("index.html")
-    return render_template("crop.html", cropIdList=cropIdList, crops=crops)
-
+def crop():	
+	if request.method == 'POST':
+		session['numOfAcr']=request.form['numAcr']
+		session['GPA']=request.form['GPA']
+		session['tankSize']=request.form['tankSizeG']
+		crops= getCrops(mysql=mysql)
+		return render_template("crop.html", cropIdList=cropIdList, crops=crops)
+	return redirect(url_for(''))
+#Weed Page
 @app.route('/weed', methods=['POST', 'GET'])
 def weed():
-    cursor = mysql.connect.cursor()
-    weeds =[]
-    if request.method == 'POST':
-        gotData = False
-        report = None
-        crops =["{}".format(request.form["crop1"])]
-        for i in range(2,cropIdList+1):
-            value = request.form["crop{}".format(i)]
-            if value != "none":
-                crops.append("{}".format(value))
-        session['crops']=crops
-        equalQuery = ""
-        subQuery = ""
-        ident = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z']
-        i = 0
-        for crop in crops:
-            subQuery = subQuery+"(select sprayName from CropSprayData where plantName = '{}') as {},".format(crop,ident[i])
-            equalQuery = equalQuery+"a.sprayName ={}.sprayName and ".format(ident[i])
-            i=i+1
-        subQuery = subQuery[:-1]
-        equalQuery= equalQuery[:-5]
-        query =""
-        query1=""
-        try:
-            query1 ="select a.sprayName from {} where {}".format(subQuery,equalQuery)
-            cursor.execute(query1)            
-            sprays = cursor.fetchall()
-            sprayQuery='('
-            sprayNames=[]
-            for spray in sprays:
-                sprayNames.append(spray[0])
-                sprayQuery= sprayQuery+"'{}',".format(spray[0])
-            sprayQuery=sprayQuery[:-1]+")"
-            session['sprays']=sprayQuery
-            print(sprayNames)
-            query ="select w.plantName from WeedSprayData as w where w.sprayName in {}".format(sprayQuery)
-        except Exception as e:
-            print(e)
-            print(query1)
-        try: 
-            cursor.execute(query)
-            weedNames= cursor.fetchall()
-            cursor.close()
-            for weed in weedNames:
-                weeds.append(weed[0])
-        except Exception as e:
-            print(e)
-            print(query)
-    return render_template("weed.html",  weedIdList=weedIdList, weeds = weeds)
-
-        
-        
-        
-
+	if request.method == 'POST':
+		weeds, session['crops'], session['sprays'] = getWeeds(mysql=mysql, 
+														crops=requestPlant(request=request,plant='crop', numberOfCrops=cropIdList))
+		return render_template("weed.html",  weedIdList=weedIdList, weeds = weeds)      
+	return redirect(url_for('crop'))
+#Spray pave
 @app.route('/spray', methods=['POST', 'GET'])
 def spray():
-    weeds ="("   
-    for i in range(1,weedIdList+1):
-        value = request.form["weed{}".format(i)]
-        if value != "none":
-            weeds=weeds+"'{}',".format(value)
-    weeds=weeds[:-1]+")"
-    sprayQuery= session['sprays']
-    report =None
-    cursor = mysql.connect.cursor()
-    try:
-        query="select sprayName, plantName, price from WeedSprayData as weed, spray where  spray.name = weed.sprayName and weed.plantName in {} and weed.sprayName in {} order by weed.sprayName".format(weeds,sprayQuery)
-        cursor.execute(query)
-        result=cursor.fetchall()
-        report =filterQuery(result=result)
-                    
-    except Exception as e:
-        print(e)
-    fullReport=[]
-    try:
-        crops=session['crops']
-        listOfCrops = "("
-        for crop in crops:
-            listOfCrops="{}'{}',".format(listOfCrops,crop)
-        listOfCrops = listOfCrops[:-1]+")"
-        for row in report:
-            query="SELECT MIN(concentration) from CropSprayData where sprayName='{}' and plantName in {}".format(row[0],listOfCrops)
-            cursor.execute(query)
-            result=cursor.fetchone()
-            concentration =  "{:.2f}".format(result[0])
-            row.append(concentration)            
-            fullReport.append(row)
-        session['sprayReport']=fullReport
-    except Exception as e:
-        print(e)
-        print("exception")
-    return render_template("result.html", data=fullReport,numAcr = session['numOfAcr'])
-
+	if request.method == 'POST':
+		fullReport = getSprays(mysql=mysql,crops=session['crops'],sprays=session['sprays'],
+						 weeds=requestWeeds(request=request,numberOFWeeds=weedIdList))
+		session['fullReport']=fullReport
+		return render_template("spray.html", data=fullReport,numAcr = session['numOfAcr'])
+	return redirect(url_for('weed'))
+#Result Page
 @app.route('/spray/<spray>')
 def calcSpray(spray):
+	report = calculateResult(spray, session['sprayReport'], session['numOfAcr'],
+							 session['GPA'], session['tankSize'])
+	return render_template("result.html", report = report)
 
-    return spray
 @app.route('/login')
 def loadLogin():
-    return render_template("login.html")
+	return render_template("login.html")
+# validates login and loads template for either:
+# regular users 
+# admin users 
+@app.route('/validateLogin', methods=['POST', 'GET'])
+def load_menu():
+	uName = request.form['username']
+	pWord = request.form['password']
+	cursor = mysql.connection.cursor()
+
+	cursor.execute("SELECT username FROM users WHERE username = %s AND passwd = %s", (uName, pWord))
+	for (username) in cursor:
+		session['username'] = username
+		cursor.close()
+		return redirect(url_for('add'))
+	cursor.close()
+	return render_template("login.html", invalid=True)
+@app.route('/add')
+def add():
+	cropNames, weedNames = getPlantNames(mysql)
+	return render_template('addSpray.html',crops=cropNames,weeds=weedNames,
+						   cropIdList=maxNumberOfCrops,weedIdList=maxNumberOfWeeds)
+
+@app.route('/add/spray', methods=['POST','GET'])
+def sqladdSpray():
+	if request.method == 'POST':
+		success = addSpray( mysql=mysql,spray="{}".format(request.form['spray']), price=float(request.form['price']),
+						   crops=requestPlant(request=request,plant='crop', numberOfCrops=maxNumberOfCrops),
+						   cropPPA=requestPlant(request=request,plant='cropPPA',numberOfCrops=maxNumberOfCrops),
+						   weeds=requestPlant(request=request,plant='weed', numberOfCrops=maxNumberOfWeeds))
+		if success== True:
+			return redirect(url_for('add'))
+	return redirect(url_for('index'))
+
 if __name__ == '__main__':
-    app.run(debug=True)
+	app.run(debug=True)

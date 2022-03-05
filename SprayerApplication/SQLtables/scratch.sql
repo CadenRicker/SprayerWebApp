@@ -12,3 +12,5 @@ select a.sprayName from (select sprayName from CropSprayData where plantName ='r
 select DISTINCT(sprayName) from CropSprayData where plantName in ('rye','durum wheat') and (plantName in ('rye') or plantName in('durum wheat'));
 select plantName from WeedSprayData where sprayName in ('2 4-d amine 4 albaugh','2 4-d amine alligare  llc');
 select sprayName from WeedSprayData where sprayName in ('2 4-d amine 4 albaugh','2 4-d amine alligare  llc');
+INSERT INTO spray (name,price) values ('old',10.0);
+
