@@ -57,7 +57,7 @@ def addCropSprayData(cursor,data):
             insertString=insertString+"('{}','{}',{}),\n".format(spray ,crop,row[2])
     if len(insertString)>1:
         try:
-            insertString ="Insert INTO CropSprayData (sprayName,plantName,concentration) values \n"+insertString[:-2]
+            insertString ="Insert INTO CropSprayData (sprayName,plantName,pintsPerAcre) values \n"+insertString[:-2]
             cursor.execute(insertString)
         except Exception as e:
             print("execption in add crop spray data")

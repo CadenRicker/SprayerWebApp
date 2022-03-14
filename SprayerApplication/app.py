@@ -48,7 +48,7 @@ def spray():
 	if request.method == 'POST':
 		fullReport = getSprays(mysql=mysql,crops=session['crops'],sprays=session['sprays'],
 						 weeds=requestWeeds(request=request,numberOFWeeds=weedIdList))
-		session['fullReport']=fullReport
+		session['sprayReport']=fullReport
 		return render_template("spray.html", data=fullReport,numAcr = session['numOfAcr'])
 	return redirect(url_for('weed'))
 #Result Page

@@ -17,8 +17,7 @@ CREATE TABLE spray(
 CREATE TABLE CropSprayData(
     sprayName varchar(40) ,
     plantName varchar(30) ,
-    concentration Decimal(15,4),
-    gallonsPerAcr DECIMAL(15,4),
+    pintsPerAcre DECIMAL(15,4),
     primary key (sprayName, plantName),
     foreign key (sprayName) references spray(name),
     foreign key (plantName) references  plant(name)
@@ -44,7 +43,7 @@ create procedure addSpray(sprayName varchar(40), sprayPrice Decimal(13,2)) Begin
 end//
 create procedure addCropToSpray( nameOfPlant varchar(30),nameOfSpray varchar(40), ppa Decimal(15,4))Begin
     Start Transaction;
-        insert into CropSprayData (plantName,sprayName,concentration) values (nameOfPlant,nameOfSpray,ppa);
+        insert into CropSprayData (plantName,sprayName,pintsPerAcr) values (nameOfPlant,nameOfSpray,ppa);
     commit;
 end//
 

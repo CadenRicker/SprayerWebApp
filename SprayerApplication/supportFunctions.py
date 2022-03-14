@@ -89,11 +89,11 @@ def getSprays(mysql: MySQL,crops, sprays, weeds):
             listOfCrops="{}'{}',".format(listOfCrops,crop)
         listOfCrops = listOfCrops[:-1]+")"
         for row in report:
-            query="SELECT MIN(concentration) from CropSprayData where sprayName='{}' and plantName in {}".format(row[0],listOfCrops)
+            query="SELECT MIN(pintsPerAcre) from CropSprayData where sprayName='{}' and plantName in {}".format(row[0],listOfCrops)
             cursor.execute(query)
             result=cursor.fetchone()
-            concentration =  "{:.2f}".format(result[0])
-            row.append(concentration)            
+            ppa =  "{:.2f}".format(result[0])
+            row.append(ppa)            
             fullReport.append(row)
     except Exception as e:
         print(e)
