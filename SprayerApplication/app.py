@@ -1,5 +1,3 @@
-from crypt import methods
-from unittest import result
 from flask import Flask, render_template, request, redirect, url_for, session
 from flask_mysqldb import MySQL
 from numpy import place
@@ -23,6 +21,11 @@ maxNumberOfWeeds=100
 # Home Page
 @app.route("/")
 def index():
+	"""_summary_
+
+	Returns:
+		_type_: _description_
+	"""
 	return render_template("index.html")
 # Crop page
 @app.route("/crop", methods=['POST', 'GET'])

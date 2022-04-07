@@ -60,6 +60,7 @@
                       <input type="number" class="form-control" name="cropPPA{{i}}" id="cropPPA{{i}}" value="10" min="0.1" step="0.001" >
                     {%else%}
                       <input list="crop{{i}}s"  class="form-control" name="crop{{i}}" id="crop{{i}}" value="none" autocomplete="on" >
+                      <label> Pints Per Acre </label>
                       <input type="number" class="form-control" name="cropPPA{{i}}" id="cropPPA{{i}}" value="none" min="0.1" step="0.001" >
                     {%endif%}
                     
@@ -90,8 +91,12 @@
                     <label >Weed: {{i}}</label>
                     {% if i == 1 %}
                       <input list="weed{{i}}s" class="form-control"  name="weed{{i}}" id="weed{{i}}" value="{{weeds[0]}}" autocomplete="on">
+                      <label> Rating </label>
+                      <input type="number" class="form-control" name="weedRating{{i}}" id="WeedRating{{i}}" value="none" min="0.1" step="0.001" >
                     {%else%}
                       <input list="weed{{i}}s"  class="form-control" name="weed{{i}}" id="weed{{i}}" value="none" autocomplete="on" >
+                      <label> Rating </label>
+                      <input type="number" class="form-control" name="weedRating{{i}}" id="WeedRating{{i}}" value="none" min="0.1" step="0.001" >
                     {%endif%}
                     
                     <datalist  id="weed{{i}}s" class="form-select" >

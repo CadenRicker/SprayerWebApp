@@ -1,11 +1,19 @@
 from ast import Num
 import string
 import sys
-from typing import Any
+from typing import Any, Tuple
 from urllib.request import Request
 from flask_mysqldb import MySQL
 from numpy import number
-def getCrops(mysql):
+def getCrops(mysql: MySQL) ->list:
+    """
+    This function takes a MySQL object and returns a list of crops
+    
+    :param mysql: MySQL - this is the MySQL object that we created in the main script
+    :type mysql: MySQL
+    :return: A list of crops.
+    """
+# This is a way to get a list of crops from the database.
     cropList = None
     try:
         cursor = mysql.connect.cursor()
@@ -16,17 +24,40 @@ def getCrops(mysql):
     except Exception as e:  # catches random errors
         print(e)
     return cropList
-def requestPlant(request: Request ,plant: string, numberOfCrops):
+def requestPlant(request: Request ,plant: string, numberOfCrops: int)-> list:
+    """
+    This function takes in a request object, a string of the plant name, and an integer of the number of
+    crops.
+    It then creates a list of crops from the form
+    
+    :param request: The request object that contains all the information from the form
+    :type request: Request
+    :param plant: The name of the plant
+    :type plant: string
+    :param numberOfCrops: Number of crops used in the form
+    :type numberOfCrops: int
+    :return: A list of crops.
+    """
+# This is a way to get a list of crops from the form.
     plants =["{}".format(request.form["{}1".format(plant)])]
     for i in range(2,numberOfCrops+1):
         value = request.form["{}{}".format(plant,i)]
         if value != "none":
             plants.append("{}".format(value))
     return plants
-def getWeeds(mysql: MySQL, crops):
+def getWeeds(mysql: MySQL, crops: list)-> Tuple[list, list, str]:
+    """
+    The function takes in a list of crop names and returns a list of weed names that are sprayed with
+    the same sprays as the crops
+    
+    :param mysql: MySQL - the MySQL object used to connect to the database
+    :type mysql: MySQL
+    :param crops: a list of crops that the user has selected
+    :type crops: list
+    :return: A list of weed names and a list of crop names.
+    """
     cursor = mysql.connect.cursor()
     weeds =[]		
-    
     equalQuery = ""
     subQuery = ""
     ident = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z']
@@ -64,6 +95,16 @@ def getWeeds(mysql: MySQL, crops):
         print(query)
     return weeds, crops,sprayQuery
 def requestWeeds(request, numberOFWeeds):
+    """
+    This function takes in a request object and a number of weeds.
+    It then loops through the number of weeds and checks if the weed is not none.
+    If it is not none, it adds the weed to the weeds string.
+    It then returns the weeds string
+    
+    :param request: the request object that contains all the data sent by the user
+    :param numberOFWeeds: number of weeds in the form.
+    :return: A string of the values of the weeds.
+    """
     weeds ="("   
     for i in range(1,numberOFWeeds+1):
         value = request.form["weed{}".format(i)]
@@ -72,6 +113,16 @@ def requestWeeds(request, numberOFWeeds):
     weeds=weeds[:-1]+")"
     return weeds
 def getSprays(mysql: MySQL,crops, sprays, weeds):
+    """
+    
+    :param mysql: the MySQL object we created in the main program
+    :type mysql: MySQL
+    :param crops: a list of crops that the user wants to spray
+    :param sprays: a list of spray names
+    :param weeds: a list of strings, each string is a weed name
+    :return: A list of lists. Each list contains the spray name, the plant name, the price, and the
+    minimum price per acre.
+    """
     sprayQuery= sprays
     report =None
     cursor = mysql.connect.cursor()
@@ -100,13 +151,13 @@ def getSprays(mysql: MySQL,crops, sprays, weeds):
         print("exception")
     return  fullReport
 
-def sortByList(list1,list2):
+def sortByList(list1: list,list2: list)->list:
     zipped_lists = zip(list1, list2)
     sorted_pairs = sorted(zipped_lists, reverse=True)
     tuples = zip(*sorted_pairs)
     list1, list2 = [ list(tuple) for tuple in  tuples]
     return list2
-def filterQuery(result):
+def filterQuery(result: list)-> list:
     weeds = []
     last = result[0][0]
     sprayNames =[last]
@@ -133,7 +184,19 @@ def filterQuery(result):
         tmpRow =[row[0],"{:.2f}".format(row[1]),row[2]]
         filtterd.append(tmpRow)
     return filtterd
-def calculateResult(sprayName, sprayData, acerage, sprayGPA,tankSize):
+def calculateResult(sprayName: str, sprayData: list, acerage: float, sprayGPA: float,tankSize: float)->list:
+    """_summary_
+
+    Args:
+        sprayName (str): _description_
+        sprayData (list): _description_
+        acerage (float): _description_
+        sprayGPA (float): _description_
+        tankSize (float): _description_
+
+    Returns:
+        list: _description_
+    """
     report =None
     info = None
     for row in sprayData:
@@ -156,7 +219,16 @@ def calculateResult(sprayName, sprayData, acerage, sprayGPA,tankSize):
     report = [sprayName, gallonsOfSpray, cost,[numberOFFullTanks,sprayPerFullTank],
               [sparyPerPartTank,(float(lastTank)-sparyPerPartTank)]]
     return report
-def getPlantNames(mysql: MySQL):
+
+def getPlantNames(mysql: MySQL)->Tuple[list,list]:
+    """queries the mysql database for a list of crops and a list of weeds
+
+    Args:
+        mysql (MySQL): flask mysql instance
+    
+    Returns:
+        Tuple[list,list]: crops, weeds
+    """
     crops =[]
     weeds =[]
     try:	
@@ -170,7 +242,21 @@ def getPlantNames(mysql: MySQL):
     except Exception as e:
         print(e)
     return crops, weeds
-def addSpray(mysql: MySQL,spray: string,price: float, crops: list, cropPPA, weeds: list):
+
+def addSpray(mysql: MySQL,spray: string,price: float, crops: list, cropPPA: float, weeds: list) -> bool:
+    """ adds spray and spray data to database
+
+    Args:
+        mysql (MySQL): flask MySql Connector
+        spray (string): name of spray
+        price (float): price of spray
+        crops (list): list of crops safe on spray
+        cropPPA (float): safe amount of pints per acre
+        weeds (list): list of weeds that the spray is effective on
+
+    Returns:
+        bool: true for success and false for failure
+    """
     try:
         with mysql.connect.cursor() as cursor:    
             cursor.callproc('addspray',(spray,price))
