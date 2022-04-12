@@ -1,12 +1,10 @@
-
-
 <!DOCTYPE html>
 <html>
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width">
     <title>Home</title>
-    <link href="../static/covidTracker.css" rel="stylesheet" type="text/css" />
+    <link href="../static/HerbicideCalculator.css" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootswatch@4.5.2/dist/litera/bootstrap.min.css" integrity="sha384-enpDwFISL6M3ZGZ50Tjo8m65q06uLVnyvkFO3rsoW0UC15ATBFz3QEhr3hmxpYsn" crossorigin="anonymous">
   </head>
   <body class="background">
@@ -14,7 +12,7 @@
      <div class="bs-example">
             <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
                 <a href="#" class="navbar-brand">
-                   Sprayer Application
+                   Herbicide Calculator
                 </a>
                 <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
                     <span class="navbar-toggler-icon"></span>
@@ -38,7 +36,7 @@
             {% set numOfWeeds = weedIdList | int %}
             <div class="login-form">
             <form action= "http://localhost:5000/add/spray" method = 'POST'> 
-                <h2 class="text">Spray</h2>
+                <h2 class="text">Herbicide</h2>
                 <div>
                   <input type="text" name="spray" id="type" class="form-control" placeholder="Spray name">
                   <label for="price">Cost</label>

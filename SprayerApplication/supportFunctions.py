@@ -5,6 +5,9 @@ from typing import Any, Tuple
 from urllib.request import Request
 from flask_mysqldb import MySQL
 from numpy import number
+"""
+    This is a set of support functions created to help app.pyy
+"""
 def getCrops(mysql: MySQL) ->list:
     """
     This function takes a MySQL object and returns a list of crops
@@ -112,9 +115,10 @@ def requestWeeds(request, numberOFWeeds):
             weeds=weeds+"'{}',".format(value)
     weeds=weeds[:-1]+")"
     return weeds
-def getSprays(mysql: MySQL,crops, sprays, weeds):
+def getReport(mysql: MySQL,crops, sprays, weeds):
     """
-    
+    generates a report for using the list of crops, list of sprays safe on the crops, and list of weeds.
+    the report 
     :param mysql: the MySQL object we created in the main program
     :type mysql: MySQL
     :param crops: a list of crops that the user wants to spray
@@ -152,12 +156,34 @@ def getSprays(mysql: MySQL,crops, sprays, weeds):
     return  fullReport
 
 def sortByList(list1: list,list2: list)->list:
+    """ sorts list1 and list2 using the elements of list one for the order and 
+        keeps list2 elements in the same order as the coresseonding list1 element.
+        returns the sorted list2.
+
+    Args:
+        list1 (list): first list used to sort the second
+        list2 (list): list to be ordered by the sorting of the first list
+
+    Returns:
+        list: list2 sorted by the sorting of list1
+    """
     zipped_lists = zip(list1, list2)
     sorted_pairs = sorted(zipped_lists, reverse=True)
     tuples = zip(*sorted_pairs)
     list1, list2 = [ list(tuple) for tuple in  tuples]
     return list2
 def filterQuery(result: list)-> list:
+    """
+        takes a 2d array where each 1d array are matched by there first element and 
+        combined into a single array with all the elements from the last elements of the 1d array
+    Args:
+        result (list): 2d array with three columns
+
+    Returns:
+        list: 2d array that has no duplicates in the first columns and the rows with duplicate 
+        first column entries have their third column combined into a single column
+        rows are then sorted by the number of elements each row has in column3.
+    """
     weeds = []
     last = result[0][0]
     sprayNames =[last]
@@ -185,7 +211,7 @@ def filterQuery(result: list)-> list:
         filtterd.append(tmpRow)
     return filtterd
 def calculateResult(sprayName: str, sprayData: list, acerage: float, sprayGPA: float,tankSize: float)->list:
-    """_summary_
+    """ generates final report for the farmer based on their choice of spray. 
 
     Args:
         sprayName (str): _description_

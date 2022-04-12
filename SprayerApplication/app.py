@@ -49,7 +49,7 @@ def weed():
 @app.route('/spray', methods=['POST', 'GET'])
 def spray():
 	if request.method == 'POST':
-		fullReport = getSprays(mysql=mysql,crops=session['crops'],sprays=session['sprays'],
+		fullReport = getReport(mysql=mysql,crops=session['crops'],sprays=session['sprays'],
 						 weeds=requestWeeds(request=request,numberOFWeeds=weedIdList))
 		session['sprayReport']=fullReport
 		return render_template("spray.html", data=fullReport,numAcr = session['numOfAcr'])

@@ -328,7 +328,7 @@ class Test_Report(TestCase):
                 ['2 4-d amine 4 albaugh', '31.00', ['bitterweed', 'broomweed', 'dandelion'], '1.70'], 
                 ['dagger', '10.00', ['dandelion'], '1.15'], 
                 ['2 4-d lv 4 winfield united', '21.00', ['dandelion'], '2.10']]
-		fullReport = getSprays(mysql=MySQL(self.app),crops=['durum wheat','rye'],
+		fullReport = getReport(mysql=MySQL(self.app),crops=['durum wheat','rye'],
                          sprays="('2 4-d amine 4 albaugh','2 4-d amine alligare  llc','2 4-d lv 4 winfield united','dagger')",
                          weeds="('dandelion','bitterweed','broomweed')")
 		self.assertEqual(EFullReport,fullReport)
