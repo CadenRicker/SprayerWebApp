@@ -21,10 +21,10 @@ maxNumberOfWeeds=100
 # Home Page
 @app.route("/")
 def index():
-	"""_summary_
+	""" loads index.html
 
 	Returns:
-		_type_: _description_
+		_type_: jinja template
 	"""
 	return render_template("index.html")
 # Crop page
@@ -45,7 +45,7 @@ def weed():
 														crops=requestPlant(request=request,plant='crop', numberOfCrops=cropIdList))
 		return render_template("weed.html",  weedIdList=weedIdList, weeds = weeds)      
 	return redirect(url_for('crop'))
-#Spray pave
+#Spray page
 @app.route('/spray', methods=['POST', 'GET'])
 def spray():
 	if request.method == 'POST':
@@ -77,14 +77,17 @@ def load_menu():
 	for (username) in cursor:
 		session['username'] = username
 		cursor.close()
+		session['added'] = False
 		return redirect(url_for('add'))
 	cursor.close()
 	return render_template("login.html", invalid=True)
 @app.route('/add')
 def add():
 	cropNames, weedNames = getPlantNames(mysql)
+	added = session['added']
+	session['added']=False
 	return render_template('addSpray.html',crops=cropNames,weeds=weedNames,
-						   cropIdList=maxNumberOfCrops,weedIdList=maxNumberOfWeeds)
+						   cropIdList=maxNumberOfCrops,weedIdList=maxNumberOfWeeds,added = added)
 
 @app.route('/add/spray', methods=['POST','GET'])
 def sqladdSpray():
@@ -94,6 +97,7 @@ def sqladdSpray():
 						   cropPPA=requestPlant(request=request,plant='cropPPA',numberOfCrops=maxNumberOfCrops),
 						   weeds=requestPlant(request=request,plant='weed', numberOfCrops=maxNumberOfWeeds))
 		if success== True:
+			session['added'] = True
 			return redirect(url_for('add'))
 	return redirect(url_for('index'))
 

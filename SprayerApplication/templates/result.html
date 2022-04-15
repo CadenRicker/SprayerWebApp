@@ -37,16 +37,16 @@
       <div class="login-form">
         <form action= "" method = 'POST'>
         <h1>{{report[0]}}</h1>
-        <h2>Gallons Of Herbicide: {{report[1]}}</h2>
-        <h2>Cost: ${{report[2]}}</h2>
+        <h2>Gallons Of Herbicide: {{"%.2f"|format(report[1])}}</h2>
+        <h2>Cost: ${{"%.2f"|format(report[2])}}</h2>
         {%if report[3][0] >0%}
-          <h2>Full Tanks: {{report[3][0]}}</h2>
-          <h3>Gallons of Herbicide Per Full Tank: {{report[3][1]}}</h3>
+          <h2>Full Tanks: {{"%d"|format(report[3][0])}}</h2>
+          <h3>Gallons of Herbicide Per Full Tank: {{"%.2f"|format(report[3][1])}}</h3>
         {% endif%}
         {% if report[4][0] > 0 %}
         <h2>Partial Tank:</h2>
-        <h3>Herbicide for Partial Tank: {{report[4][0]}}</h3>
-        <h3>Water for Partial Tank: {{report[4][1]}}</h3>
+        <h3>Herbicide for Partial Tank: {{"%.2f"|format(report[4][0])}}</h3>
+        <h3>Water for Partial Tank: {{"%.2f"|format(report[4][1])}}</h3>
         {%endif%}
 
         </form>

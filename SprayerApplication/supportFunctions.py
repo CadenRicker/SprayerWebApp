@@ -1,4 +1,5 @@
 from ast import Num
+from cmath import tan
 import string
 import sys
 from typing import Any, Tuple
@@ -237,12 +238,16 @@ def calculateResult(sprayName: str, sprayData: list, acerage: float, sprayGPA: f
     gallonsOfSpray =ppa*pintsToGallons*float(acerage)
     cost = gallonsOfSpray*float(price)
     totalGallons = float(acerage) * float(sprayGPA)
+    if totalGallons <= 0:
+        totalGallons = 0.000001
     ratio = gallonsOfSpray/totalGallons
-    lastTank = int(totalGallons)%int(tankSize)
+    tankSize = float(tankSize)
+    tankSize = tankSize if tankSize>0 else 0.0000001
+    lastTank = float(totalGallons)%float(tankSize)
     numberOFFullTanks = (totalGallons-float(lastTank))/float(tankSize)
     sprayPerFullTank = round(float(tankSize)*ratio,4)
     sparyPerPartTank = round(float(lastTank)*ratio,4)
-    report = [sprayName, gallonsOfSpray, cost,[numberOFFullTanks,sprayPerFullTank],
+    report = [sprayName, gallonsOfSpray, cost,[int(numberOFFullTanks),sprayPerFullTank],
               [sparyPerPartTank,(float(lastTank)-sparyPerPartTank)]]
     return report
 

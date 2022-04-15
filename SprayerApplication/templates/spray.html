@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width">
     <title>Home</title>
-    <link href="../static/HerbicdeCalculator.css" rel="stylesheet" type="text/css" />
+    <link href="../static/HerbicideCalculator.css" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootswatch@4.5.2/dist/litera/bootstrap.min.css" integrity="sha384-enpDwFISL6M3ZGZ50Tjo8m65q06uLVnyvkFO3rsoW0UC15ATBFz3QEhr3hmxpYsn" crossorigin="anonymous">
   </head>
   <body class="background">
@@ -56,7 +56,7 @@
                 <td>{{row[3]}}</td>
                 {% set ppa = row[3] |float %}
                 {% set price = row[1] |float%}
-                <td>{{"%.2f"|format(ppa*0.125*price*Acres)}}
+                <td>{{"$%.2f"|format(ppa*0.125*price*Acres)}}
                 <td>
                   <ul>
                     {% for weed in row[2] %}

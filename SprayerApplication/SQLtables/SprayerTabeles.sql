@@ -43,7 +43,7 @@ create procedure addSpray(sprayName varchar(40), sprayPrice Decimal(13,2)) Begin
 end//
 create procedure addCropToSpray( nameOfPlant varchar(30),nameOfSpray varchar(40), ppa Decimal(15,4))Begin
     Start Transaction;
-        insert into CropSprayData (plantName,sprayName,pintsPerAcr) values (nameOfPlant,nameOfSpray,ppa);
+        insert into CropSprayData (plantName,sprayName,pintsPerAcre) values (nameOfPlant,nameOfSpray,ppa);
     commit;
 end//
 
