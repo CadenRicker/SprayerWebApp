@@ -31,14 +31,15 @@
                 </div>
             </nav>
         </div>
-
+         {% if added %}
+            <div class="alert alert-dismissible alert-success">
+              <strong>Herbicide Added Successfully</strong>
+            </div>
+          {%endif%}
             {% set numOfCrops = cropIdList | int %}
             {% set numOfWeeds = weedIdList | int %}
             <div class="login-form">
             <form action= "http://localhost:5000/add/spray" method = 'POST'> 
-                {% if added %}
-                  <h1 class="text-success"> Herbicide Added Successfully </h1>
-                {%endif%}
                 <h2 class="text">Herbicide</h2>
                 <div>
                   <input type="text" name="spray" id="type" class="form-control" placeholder="Spray name">

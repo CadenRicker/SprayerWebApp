@@ -5,11 +5,18 @@ import numpy
 import mysql.connector
 import config
 
-def addPlantNames(cursor,plants,isCrop):
+def addPlantNames(cursor, plants,isCrop):
+    """addeds plant names to the dataBase
+
+    Args:
+        cursor (_type_): MySQL cursor
+        plants (_type_): list of plants
+        isCrop (bool): bool that is true if the list of plants are crops
+    """
     values ='INSERT INTO plant (name, crop) values '
     for plant in plants :
         values=values+"('{}',{}),\n".format((plant[0]).lower(),isCrop)
-    values = values[:-2] # rmoves extra comma
+    values = values[:-2] # removes extra comma
     #print(values)
     try:
         cursor.execute(values)
@@ -19,6 +26,12 @@ def addPlantNames(cursor,plants,isCrop):
     return
 
 def addSprays(cursor,sprays):
+    """ add sprays adds the list of sprays into the spray table
+
+    Args:
+        cursor (_type_): cursor
+        sprays (list): list of sprays
+    """
     values ='INSERT INTO spray (name,price) values '
     for spray in sprays:
         values = values +"('{}',{}),\n".format( (spray[0]).lower(),spray[1])
@@ -31,6 +44,12 @@ def addSprays(cursor,sprays):
         print(values+";")
     return
 def addCropSprayData(cursor,data):
+    """adds rows to CropSprayData to table
+
+    Args:
+        cursor (_type_): MySql Cursor
+        data (list): _description_
+    """
     cropNames=[]
     sprayNames=[]
     try:
@@ -64,7 +83,14 @@ def addCropSprayData(cursor,data):
             print(e)
             print(insertString)
     return
+
 def addWeedSprayData(cursor,data):
+    """adds rows to Weeds SprayData using data
+
+    Args:
+        cursor (_type_): MySQL Cursor
+        data (list): list of weeds with first element the name of spray name
+    """
     weedNames=[]
     sprayNames=[]
     try:
@@ -95,7 +121,6 @@ def addWeedSprayData(cursor,data):
     if len(insertString)>0:
         try:
             insertString = "Insert into WeedSprayData (sprayName,plantName) values\n"+insertString[:-2]
-            #print(insertString+";")
             cursor.execute(insertString)
         except Exception as e:
             print("execption in add weed spray data")
@@ -104,6 +129,10 @@ def addWeedSprayData(cursor,data):
     return;
 
 def run(filename):
+    """ Loads the file into the database
+    Args:
+        filename (string ): _name of file to load into the data
+    """
     mydb = mysql.connector.connect(host=config.host,user =config.user,password  =config.password,database  =config.database)
     with mydb.cursor() as cursor:
         try:

@@ -30,6 +30,12 @@ def index():
 # Crop page
 @app.route("/crop", methods=['POST', 'GET'])
 def crop():	
+	""" reads the input from index.html form and saves it to the session
+	it then renders the corp.html with the crop list from the database.
+
+	Returns:
+		_type_: html template or redirects to home
+	"""
 	if request.method == 'POST':
 		session['numOfAcr']=request.form['numAcr']
 		session['GPA']=request.form['GPA']
@@ -40,6 +46,12 @@ def crop():
 #Weed Page
 @app.route('/weed', methods=['POST', 'GET'])
 def weed():
+	"""reads form from crop.html and then renders weed.html with weeds that have sprays
+	that are safe on the crops.
+
+	Returns:
+		_type_: _description_
+	"""
 	if request.method == 'POST':
 		weeds, session['crops'], session['sprays'] = getWeeds(mysql=mysql, 
 														crops=requestPlant(request=request,plant='crop', numberOfCrops=cropIdList))
@@ -48,6 +60,12 @@ def weed():
 #Spray page
 @app.route('/spray', methods=['POST', 'GET'])
 def spray():
+	"""reads form from weed.html and uses weed list and crop list to select viable sprays.
+	then renders template for spray.html
+
+	Returns:
+		_type_: spray.html
+	"""
 	if request.method == 'POST':
 		fullReport = getReport(mysql=mysql,crops=session['crops'],sprays=session['sprays'],
 						 weeds=requestWeeds(request=request,numberOFWeeds=weedIdList))
@@ -57,18 +75,35 @@ def spray():
 #Result Page
 @app.route('/spray/<spray>')
 def calcSpray(spray):
+	"""uses the spray name generate the report
+
+	Args:
+		spray (string): name of spray selected
+
+	Returns:
+		_type_: result.html
+	"""
 	report = calculateResult(spray, session['sprayReport'], session['numOfAcr'],
 							 session['GPA'], session['tankSize'])
 	return render_template("result.html", report = report)
 
 @app.route('/login')
 def loadLogin():
+	"""loads the login.html
+
+	Returns:
+		_type_: login.html
+	"""
 	return render_template("login.html")
-# validates login and loads template for either:
-# regular users 
-# admin users 
+
 @app.route('/validateLogin', methods=['POST', 'GET'])
-def load_menu():
+def validateLogin():
+	""" reads form from login.html username and password. If the user name and password are valid
+		redirct user to addSpray otherwise redirects user to login.
+
+	Returns:
+		_type_: redirct url
+	"""    
 	uName = request.form['username']
 	pWord = request.form['password']
 	cursor = mysql.connection.cursor()
@@ -83,6 +118,11 @@ def load_menu():
 	return render_template("login.html", invalid=True)
 @app.route('/add')
 def add():
+	"""renders addSpray.html with weed and crop names from the database
+
+	Returns:
+		_type: addSpray.html
+	"""
 	cropNames, weedNames = getPlantNames(mysql)
 	added = session['added']
 	session['added']=False
@@ -91,6 +131,13 @@ def add():
 
 @app.route('/add/spray', methods=['POST','GET'])
 def sqladdSpray():
+	"""reads form from addSpray.html and adds the spray and data to the database.
+		on a successful addition it redirects to add spray.
+		on failure returns user to /
+
+	Returns:
+		_type_: redirect
+	"""
 	if request.method == 'POST':
 		success = addSpray( mysql=mysql,spray="{}".format(request.form['spray']), price=float(request.form['price']),
 						   crops=requestPlant(request=request,plant='crop', numberOfCrops=maxNumberOfCrops),
